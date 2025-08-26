@@ -15,6 +15,14 @@
 
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+    /* শুধুমাত্র মোবাইল ডিভাইসের জন্য টেক্সট সাইজ লক করা */
+@media (max-width: 767px) {
+    /* ব্রাউজারের স্বয়ংক্রিয়ভাবে টেক্সট সাইজ পরিবর্তন করার ক্ষমতা বন্ধ করা */
+    body {
+        -webkit-text-size-adjust: 100%; /* Safari/Chrome এর জন্য */
+        text-size-adjust: 100%;         /* স্ট্যান্ডার্ড CSS */
+    }
+}
 
     <style>
         :root {
@@ -49,9 +57,17 @@
             transition: transform 0.4s ease-out, opacity 0.4s ease-out;
         }
         #header-image {
-            max-height: 55px;
-            width: auto;
-        }
+    max-height: 100px; /* মোবাইলের জন্য সাইজ */
+    width: auto;
+    transition: max-height 0.3s ease-in-out; /* সাইজ পরিবর্তনের জন্য স্মুথ ইফেক্ট */
+}
+
+/* মাঝারি এবং বড় স্ক্রিনের (ডেস্কটপ) জন্য মিডিয়া কোয়েরি */
+@media (min-width: 768px) {
+    #header-image {
+        max-height: 100px; /* ডেস্কটপের জন্য বড় সাইজ */
+    }
+}
         .header-hidden {
             transform: translateY(-100%);
             opacity: 0;
@@ -130,34 +146,35 @@
 
         <section id="hero" class="flex items-center md:min-h-screen">
             <div class="flex flex-col md:flex-row items-center gap-8 md:gap-12 w-full py-8 md:py-20 md:-translate-y-10">
-                <div class="w-[200px] h-[267px] md:w-[300px] md:h-[400px] flex-shrink-0 reveal from-left">
+                <div class="w-[120px] h-[160px] md:w-[300px] md:h-[400px] flex-shrink-0 reveal from-left">
                     <img src="https://i.postimg.cc/2ygY1yLx/retouch-2025081121252819.jpg" alt="Sajol Shutro Dhor Profile Picture" class="w-full h-full object-cover rounded-3xl border-4 border-sky-400/50" loading="lazy">
                 </div>
                 <div class="text-center md:text-left reveal from-right flex-grow flex flex-col justify-center">
                     <div>
-                        <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight uppercase text-white">Sajol Shutro Dhor</h1>
+                        <h1 class="text-2xl sm:text-4xl md:text-5xl font-extrabold tracking-tight uppercase text-white">Sajol Shutro Dhor</h1>
                         <div class="mt-6">
-                            <h2 class="text-2xl font-bold gradient-text mb-3">ABOUT ME</h2>
-                            <blockquote class="border-l-4 border-sky-400 pl-6">
+                            <h2 class="text-xl md:text-2xl font-bold gradient-text mb-3">ABOUT ME</h2>
+                            <blockquote class="border-l-4 border-sky-400 md:pl-6">
                                 <p class="hidden md:block text-justify-custom text-gray-300 leading-relaxed italic">
                                     As a passionate digital marketer with over two years of proven experience, I specialize in helping brands achieve sustainable growth through AI powered strategies, advanced SEO and high converting paid campaigns. My expertise spans across search engine optimization social media strategy and data-driven advertising enabling me to craft campaigns that not only attract but also engage and convert the right audiences. With a balance of academic learning and real world execution, I bring a results focused approach to every project, consistently driving measurable success and long-term brand impact.
                                 </p>
-                                <p class="block md:hidden text-centeralign-custom text-gray-300 leading-relaxed italic">
+                                <p class="block md:hidden text-gray-300 leading-relaxed">
                                     I drive sustainable brand growth through AI powered strategies, advanced SEO and high converting campaigns.
                                 </p>
                             </blockquote>
                         </div>
                     </div>
                     <div class="mt-8">
-                        <a href="javascript:void(0)" onclick="downloadCV()" class="inline-block gradient-bg text-slate-900 font-semibold py-3 px-8 rounded-lg shadow-lg hover:scale-105 transform transition-transform duration-300">
+                        <a href="javascript:void(0)" onclick="downloadCV()" class="inline-block gradient-bg text-slate-900 font-semibold py-2 px-6 md:py-3 md:px-8 rounded-lg shadow-lg hover:scale-105 transform transition-transform duration-300">
                              <i class="fas fa-download mr-2"></i> Download CV
                         </a>
                     </div>
                 </div>
             </div>
+            
         </section>
 
-        <section id="skills" class="mt-16 md:mt-24">
+        <section id="skills" class="mt-40 md:mt-24">
             <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 gradient-text reveal from-bottom">My Skills</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <div class="card-bg p-6 rounded-xl border border-gray-700 reveal zoom-in flex flex-col" style="transition-delay: 100ms;">
@@ -304,7 +321,7 @@
             <div class="max-w-3xl mx-auto">
                 <div class="timeline-item reveal from-bottom">
                     <div class="timeline-content">
-                        <h3 class="text-xl font-bold text-white">DM Executive <span class="text-sky-400 font-semibold">@ Marketorr</span></h3>
+                        <h3 class="text-xl font-bold text-white">DM Executive <span class="block text-lg text-sky-400 font-semibold mt-1 md:inline md:text-xl md:mt-0">@ Marketorr</span></h3>
                         <p class="text-gray-400 mb-3">Jan 2024 – Jul 2025 (Full-Time)</p>
                         <ul class="list-none space-y-2 text-gray-300">
                            <li class="flex items-start"><i class="fa-solid fa-caret-right text-sky-400 mr-3 mt-1"></i>Boosted organic traffic by 120% via SEO</li>
@@ -319,7 +336,7 @@
                 </div>
                 <div class="timeline-item reveal from-bottom" style="transition-delay: 200ms;">
                      <div class="timeline-content">
-                        <h3 class="text-xl font-bold text-white">DM Intern <span class="text-sky-400 font-semibold">@ Trusted IT</span></h3>
+<h3 class="text-xl font-bold text-white">DM Intern <span class="block text-lg text-sky-400 font-semibold mt-1 md:inline md:text-xl md:mt-0">@ Trusted IT Institute</span></h3>
                         <p class="text-gray-400 mb-3">Jun 2023 – Dec 2023 (Internship)</p>
                         <ul class="list-none space-y-2 text-gray-300">
                            <li class="flex items-start"><i class="fa-solid fa-caret-right text-sky-400 mr-3 mt-1"></i>Keyword research & on-page SEO optimization</li>
@@ -497,7 +514,7 @@
 
         <section class="mt-24 mb-12 md:mb-20">
             <div class="max-w-2xl mx-auto gradient-bg p-6 md:p-8 rounded-xl text-center reveal from-bottom">
-                <h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-slate-900">Ready to Grow Your Business?</h2>
+                <h2 class="text-lg sm:text-2xl md:text-3xl font-bold text-slate-900">Ready to Grow Your Business?</h2>
                 <p class="mt-3 text-slate-800 hidden md:block">Let's discuss how we can achieve your digital marketing goals together.</p>
             </div>
         </section>
@@ -599,7 +616,12 @@
                     }
                     loader.style.display = 'block';
                     ideasOutput.innerHTML = '';
-                    const prompt = `You are a helpful digital marketing assistant. For a business described as '${businessDescription}', generate 3 concise and actionable digital marketing strategy ideas. **Crucially, you must provide the entire response in the Bengali language.** Present them as a numbered list. For example: ১. প্রথম আইডিয়া। ২. দ্বিতীয় আইডিয়া। ৩. তৃতীয় আইডিয়া।`;
+                    const prompt = `You are a helpful digital marketing assistant. For a business described as '${businessDescription}', generate 3 concise and actionable digital marketing strategy ideas.
+
+**Instructions for your response:**
+1. The entire response MUST be in the Bengali language.
+2. Present the ideas as a numbered list (e.g., ১. প্রথম আইডিয়া, ২. দ্বিতীয় আইডিয়া).
+3. **IMPORTANT: Do not use any markdown symbols like asterisks (*), bolding (**), or hyphens (-).** Only provide the plain text numbered list.`;
                     try {
                         const resultText = await callGeminiApi(prompt);
                         const ideas = resultText.split('\n').filter(line => line.trim() !== '');
@@ -697,7 +719,7 @@
         <div class="mt-6 space-y-4">
             <div class="card-bg rounded-xl border border-gray-700"><button class="accordion-header w-full flex justify-between items-center p-4"><h3 class="font-bold text-lg text-green-400 m-0">Strengths</h3><i class="fas fa-chevron-down accordion-icon transition-transform"></i></button><div class="accordion-content"><ol class="list-decimal list-inside text-gray-300 space-y-2 p-4">${strengths.map(s => `<li>${s}</li>`).join('')}</ol></div></div>
             <div class="card-bg rounded-xl border border-gray-700"><button class="accordion-header w-full flex justify-between items-center p-4"><h3 class="font-bold text-lg text-yellow-400 m-0">Weaknesses</h3><i class="fas fa-chevron-down accordion-icon transition-transform"></i></button><div class="accordion-content"><ol class="list-decimal list-inside text-gray-300 space-y-2 p-4">${weaknesses.map(w => `<li>${w}</li>`).join('')}</ol></div></div>
-            <div class="card-bg rounded-xl border border-gray-700"><button class="accordion-header w-full flex justify-between items-center p-4"><h3 class="font-bold text-lg text-sky-400 m-0">Actionable Suggestions</h3><i class="fas fa-chevron-down accordion-icon transition-transform"></i></button><div class="accordion-content"><ol class="list-decimal list-inside text-gray-300 space-y-2 p-4">${suggestions.map(s => `<li>${s}</li>`).join('')}</ol></div></div>
+            <div class="card-bg rounded-xl border border-gray-700"><button class="accordion-header w-full flex justify-between items-center p-4"><h3 class="font-bold text-lg text-sky-400 m-0">Suggestions</h3><i class="fas fa-chevron-down accordion-icon transition-transform"></i></button><div class="accordion-content"><ol class="list-decimal list-inside text-gray-300 space-y-2 p-4">${suggestions.map(s => `<li>${s}</li>`).join('')}</ol></div></div>
         </div>
     `;
     createDoughnutChart('seoHealthChart', [seoHealth, 100 - seoHealth], ['#22c55e', '#374151']);
