@@ -666,39 +666,49 @@
         });
 
         function renderVisualReport(data) {
-            const { report, mozData } = data;
-            const seoHealthMatch = report.match(/\*\*SEO Health:\*\*.*?(\d+)/i);
-            const seoHealth = seoHealthMatch ? parseInt(seoHealthMatch[1], 10) : 75;
-            const strengthsMatch = report.match(/\*\*Strengths:\*\*\s*([\s\S]*?)\*\*Weaknesses:\*\*/i);
-            const strengths = strengthsMatch ? strengthsMatch[1].trim().split('\n').map(s => s.replace(/^- |\* /, '').trim()).filter(s => s) : [];
-            const weaknessesMatch = report.match(/\*\*Weaknesses:\*\*\s*([\s\S]*?)\*\*Actionable Suggestions:\*\*/i);
-            const weaknesses = weaknessesMatch ? weaknessesMatch[1].trim().split('\n').map(w => w.replace(/^- |\* /, '').trim()).filter(w => w) : [];
-            const suggestionsMatch = report.match(/\*\*Actionable Suggestions:\*\*\s*([\s\S]*)/i);
-            const suggestions = suggestionsMatch ? suggestionsMatch[1].trim().split('\n').map(s => s.replace(/^- |\* /, '').trim()).filter(s => s) : [];
+    // নিশ্চিত করা হচ্ছে যে ডেটা এবং এর ভেতরের অবজেক্টগুলো উপস্থিত আছে
+    const analysis = data.analysis || {};
+    const mozData = data.mozData || { domainAuthority: 0, spamScore: 0, backlinks: 0 };
 
-            const seoReport = document.getElementById('seo-report');
-            seoReport.innerHTML = `
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="card-bg p-4 rounded-xl border border-gray-700 flex flex-col items-center justify-center"><h3 class="font-bold text-lg text-white mb-2">SEO Health</h3><div class="relative w-32 h-32"><canvas id="seoHealthChart"></canvas><div class="absolute inset-0 flex items-center justify-center text-2xl font-bold text-white">${seoHealth}%</div></div></div>
-                    <div class="card-bg p-4 rounded-xl border border-gray-700 flex flex-col items-center justify-center"><h3 class="font-bold text-lg text-white mb-2">Domain Authority</h3><div class="relative w-32 h-32"><canvas id="daChart"></canvas><div class="absolute inset-0 flex items-center justify-center text-2xl font-bold text-white">${mozData.domainAuthority}</div></div></div>
-                    <div class="card-bg p-4 rounded-xl border border-gray-700 flex flex-col items-center justify-center"><h3 class="font-bold text-lg text-white mb-2">Spam Score</h3><div class="relative w-32 h-32"><canvas id="spamScoreChart"></canvas><div class="absolute inset-0 flex items-center justify-center text-2xl font-bold text-white">${mozData.spamScore}%</div></div></div>
-                    <div class="card-bg p-4 rounded-xl border border-gray-700 flex flex-col items-center justify-center"><h3 class="font-bold text-lg text-white mb-2">Total Backlinks</h3><p class="text-4xl font-bold text-white">${mozData.backlinks}</p></div>
-                </div>
-                <div class="mt-6 space-y-4">
-                    <div class="card-bg rounded-xl border border-gray-700"><button class="accordion-header w-full flex justify-between items-center p-4"><h3 class="font-bold text-lg text-green-400 m-0">Strengths</h3><i class="fas fa-chevron-down accordion-icon transition-transform"></i></button><div class="accordion-content"><ul class="text-gray-300">${strengths.map(s => `<li>${s}</li>`).join('')}</ul></div></div>
-                    <div class="card-bg rounded-xl border border-gray-700"><button class="accordion-header w-full flex justify-between items-center p-4"><h3 class="font-bold text-lg text-yellow-400 m-0">Weaknesses</h3><i class="fas fa-chevron-down accordion-icon transition-transform"></i></button><div class="accordion-content"><ul class="text-gray-300">${weaknesses.map(w => `<li>${w}</li>`).join('')}</ul></div></div>
-                    <div class="card-bg rounded-xl border border-gray-700"><button class="accordion-header w-full flex justify-between items-center p-4"><h3 class="font-bold text-lg text-sky-400 m-0">Actionable Suggestions</h3><i class="fas fa-chevron-down accordion-icon transition-transform"></i></button><div class="accordion-content"><ul class="text-gray-300">${suggestions.map(s => `<li>${s}</li>`).join('')}</ul></div></div>
-                </div>
-            `;
-            createDoughnutChart('seoHealthChart', [seoHealth, 100 - seoHealth], ['#22c55e', '#374151']);
-            createDoughnutChart('daChart', [mozData.domainAuthority, 100 - mozData.domainAuthority], ['#38bdf8', '#374151']);
-            createDoughnutChart('spamScoreChart', [mozData.spamScore, 100 - mozData.spamScore], ['#ef4444', '#4b5563']);
-            document.querySelectorAll('.accordion-header').forEach(header => {
-                header.addEventListener('click', () => {
-                    header.classList.toggle('active');
-                });
-            });
-        }
+    // --- ১০০% গ্যারান্টি লজিক: ডেটা না থাকলে ডিফল্ট মেসেজ সেট করা ---
+    let strengths = (analysis.strengths && analysis.strengths.length > 0) 
+        ? analysis.strengths 
+        : ["বিশ্লেষণ থেকে কোনো নির্দিষ্ট শক্তি চিহ্নিত করা যায়নি।"];
+    
+    let weaknesses = (analysis.weaknesses && analysis.weaknesses.length > 0) 
+        ? analysis.weaknesses 
+        : ["বিশ্লেষণ থেকে কোনো নির্দিষ্ট দুর্বলতা চিহ্নিত করা যায়নি।"];
+    
+    let suggestions = (analysis.suggestions && analysis.suggestions.length > 0) 
+        ? analysis.suggestions 
+        : ["বিশ্লেষণ থেকে কোনো কার্যকরী পরামর্শ পাওয়া যায়নি।"];
+
+    const seoHealth = analysis.seoHealth || 0;
+    const seoReport = document.getElementById('seo-report');
+    
+    // --- পরিষ্কার তালিকার জন্য <ol> ট্যাগ ব্যবহার ---
+    seoReport.innerHTML = `
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="card-bg p-4 rounded-xl border border-gray-700 flex flex-col items-center justify-center"><h3 class="font-bold text-lg text-white mb-2">SEO Health</h3><div class="relative w-32 h-32"><canvas id="seoHealthChart"></canvas><div class="absolute inset-0 flex items-center justify-center text-2xl font-bold text-white">${seoHealth}%</div></div></div>
+            <div class="card-bg p-4 rounded-xl border border-gray-700 flex flex-col items-center justify-center"><h3 class="font-bold text-lg text-white mb-2">Domain Authority</h3><div class="relative w-32 h-32"><canvas id="daChart"></canvas><div class="absolute inset-0 flex items-center justify-center text-2xl font-bold text-white">${mozData.domainAuthority}</div></div></div>
+            <div class="card-bg p-4 rounded-xl border border-gray-700 flex flex-col items-center justify-center"><h3 class="font-bold text-lg text-white mb-2">Spam Score</h3><div class="relative w-32 h-32"><canvas id="spamScoreChart"></canvas><div class="absolute inset-0 flex items-center justify-center text-2xl font-bold text-white">${mozData.spamScore}%</div></div></div>
+            <div class="card-bg p-4 rounded-xl border border-gray-700 flex flex-col items-center justify-center"><h3 class="font-bold text-lg text-white mb-2">Total Backlinks</h3><p class="text-4xl font-bold text-white">${mozData.backlinks}</p></div>
+        </div>
+        <div class="mt-6 space-y-4">
+            <div class="card-bg rounded-xl border border-gray-700"><button class="accordion-header w-full flex justify-between items-center p-4"><h3 class="font-bold text-lg text-green-400 m-0">Strengths</h3><i class="fas fa-chevron-down accordion-icon transition-transform"></i></button><div class="accordion-content"><ol class="list-decimal list-inside text-gray-300 space-y-2 p-4">${strengths.map(s => `<li>${s}</li>`).join('')}</ol></div></div>
+            <div class="card-bg rounded-xl border border-gray-700"><button class="accordion-header w-full flex justify-between items-center p-4"><h3 class="font-bold text-lg text-yellow-400 m-0">Weaknesses</h3><i class="fas fa-chevron-down accordion-icon transition-transform"></i></button><div class="accordion-content"><ol class="list-decimal list-inside text-gray-300 space-y-2 p-4">${weaknesses.map(w => `<li>${w}</li>`).join('')}</ol></div></div>
+            <div class="card-bg rounded-xl border border-gray-700"><button class="accordion-header w-full flex justify-between items-center p-4"><h3 class="font-bold text-lg text-sky-400 m-0">Actionable Suggestions</h3><i class="fas fa-chevron-down accordion-icon transition-transform"></i></button><div class="accordion-content"><ol class="list-decimal list-inside text-gray-300 space-y-2 p-4">${suggestions.map(s => `<li>${s}</li>`).join('')}</ol></div></div>
+        </div>
+    `;
+    createDoughnutChart('seoHealthChart', [seoHealth, 100 - seoHealth], ['#22c55e', '#374151']);
+    createDoughnutChart('daChart', [mozData.domainAuthority, 100 - mozData.domainAuthority], ['#38bdf8', '#374151']);
+    createDoughnutChart('spamScoreChart', [mozData.spamScore, 100 - mozData.spamScore], ['#ef4444', '#4b5563']);
+    document.querySelectorAll('.accordion-header').forEach(header => {
+        header.addEventListener('click', () => {
+            header.classList.toggle('active');
+        });
+    });
+}
         
         function createDoughnutChart(canvasId, data, colors) {
             const ctx = document.getElementById(canvasId).getContext('2d');
