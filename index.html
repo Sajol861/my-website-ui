@@ -11,289 +11,146 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
     
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-    
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
 
     <style>
-        /* Custom Styles & Color Variables */
         :root {
             --bg-color: #1f2020;
             --text-color: #E5E5E5;
-            --primary-color: #a0c4ff; /* Pastel Sky Blue */
-            --secondary-color: #ffffff; /* White */
+            --primary-color: #a0c4ff;
+            --secondary-color: #ffffff;
             --card-bg: rgba(42, 42, 42, 0.8);
-            --scrollbar-track: #111111;
             --timeline-content-bg: #2a2a2a;
         }
 
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body { width: 100%; overflow-x: hidden; }
         body {
             background-color: var(--bg-color);
             color: var(--text-color);
             font-family: 'Inter', sans-serif;
-            overflow-x: hidden; /* Prevent horizontal scrollbar from animations */
         }
-        
-        #animated-header {
+        body::-webkit-scrollbar { display: none; }
+
+        #page-header {
             width: 100%;
-            height: 96px; /* 6rem */
+            height: 90px;
+            background-color: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
             position: fixed;
             top: 0;
             left: 0;
-            z-index: 10;
-            transition: transform 0.3s ease-out;
+            z-index: 50;
+            transition: transform 0.4s ease-out, opacity 0.4s ease-out;
+        }
+        #header-image {
+            max-height: 55px;
+            width: auto;
+        }
+        .header-hidden {
+            transform: translateY(-100%);
+            opacity: 0;
+            pointer-events: none;
         }
 
         #main-content {
-            padding-top: 96px; /* Adjust based on header height */
+            padding-top: 90px;
         }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: var(--scrollbar-track);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: linear-gradient(180deg, var(--primary-color), #cbf3f0);
-            border-radius: 10px;
-        }
-
-        /* Gradient Text and Backgrounds */
+        
         .gradient-text {
             background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-fill-color: transparent;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text; text-fill-color: transparent;
         }
-        
-        .gradient-bg {
-            background: linear-gradient(90deg, var(--primary-color), #cbf3f0);
-        }
-        
-        /* Card Background */
-        .card-bg {
-            background-color: var(--card-bg);
-            backdrop-filter: blur(10px);
-        }
-        
-        /* Progress Bar Style */
+        .gradient-bg { background: linear-gradient(90deg, var(--primary-color), #cbf3f0); }
+        .card-bg { background-color: var(--card-bg); backdrop-filter: blur(10px); }
         .progress-bar-fill {
             background: linear-gradient(90deg, var(--primary-color), #8ecae6);
-            transition: width 0.8s ease-in-out;
-            width: 0%; /* Initial width */
+            transition: width 0.8s ease-in-out; width: 0%;
         }
-
-        /* Animation Styles */
         .reveal {
             opacity: 0;
-            transition: all 0.8s cubic-bezier(0.645, 0.045, 0.355, 1);
+            transition: opacity 0.8s cubic-bezier(0.645, 0.045, 0.355, 1), transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1);
+            will-change: transform, opacity;
         }
-        .reveal.from-bottom {
-            transform: translateY(50px);
-        }
-        .reveal.from-left {
-            transform: translateX(-50px);
-        }
-        .reveal.from-right {
-            transform: translateX(50px);
-        }
-        .reveal.zoom-in {
-            transform: scale(0.9);
-        }
-        .reveal.visible {
-            opacity: 1;
-            transform: none;
-        }
-        
-        /* Disable interaction with images */
-        .lock-image {
-            pointer-events: none;
-            -webkit-user-select: none; /* Safari */
-            -ms-user-select: none; /* IE 10+ */
-            user-select: none;
-        }
-        
-        /* Custom Justify Text for About Me */
-        .text-justify-custom {
-            text-align: justify;
-            text-align-last: left;
-            -moz-text-align-last: left;
-        }
-        
-        /* Timeline Style */
-        .timeline-item {
-            position: relative;
-            padding-bottom: 2rem;
-            padding-left: 2.5rem;
-        }
+        .reveal.from-bottom { transform: translateY(20px); }
+        .reveal.from-left { transform: translateX(-20px); }
+        .reveal.from-right { transform: translateX(20px); }
+        .reveal.zoom-in { transform: scale(0.95); }
+        .reveal.visible { opacity: 1; transform: none; }
+        .lock-image { pointer-events: none; user-select: none; }
+        .text-justify-custom { text-align: justify; text-align-last: left; }
+        .timeline-item { position: relative; padding-bottom: 2rem; padding-left: 2.5rem; }
         .timeline-item:before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 5px;
-            width: 2px;
-            height: 100%;
-            background: #4a4a4a;
+            content: ''; position: absolute; left: 0; top: 5px; width: 2px; height: 100%; background: #4a4a4a;
         }
-         .timeline-item:after {
-            content: '';
-            position: absolute;
-            left: -8px;
-            top: 5px;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
+        .timeline-item:after {
+            content: ''; position: absolute; left: -8px; top: 5px; width: 18px; height: 18px; border-radius: 50%;
             background: linear-gradient(90deg, var(--primary-color), #8ecae6);
-            border: 3px solid var(--bg-color);
-            z-index: 1;
+            border: 3px solid var(--bg-color); z-index: 1;
         }
-        .timeline-content {
-            background-color: var(--timeline-content-bg);
-            padding: 1.5rem;
-            border-radius: 0.75rem;
-        }
-        
-        /* Education Timeline Style */
-        .education-timeline {
-            position: relative;
-            padding-left: 2rem;
-        }
+        .timeline-content { background-color: var(--timeline-content-bg); padding: 1.5rem; border-radius: 0.75rem; }
+        .education-timeline { position: relative; padding-left: 2rem; }
         .education-timeline:before {
-            content: '';
-            position: absolute;
-            left: 8px;
-            top: 0;
-            bottom: 0;
-            width: 2px;
-            background-color: #4a4a4a;
+            content: ''; position: absolute; left: 8px; top: 0; bottom: 0; width: 2px; background-color: #4a4a4a;
         }
-        .education-item {
-            position: relative;
-            margin-bottom: 2rem;
-        }
-        .education-item:last-child {
-            margin-bottom: 0;
-        }
+        .education-item { position: relative; margin-bottom: 2rem; }
+        .education-item:last-child { margin-bottom: 0; }
         .education-icon {
-            position: absolute;
-            left: -8px;
-            top: 4px;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            background-color: var(--bg-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            position: absolute; left: -8px; top: 4px; width: 24px; height: 24px; border-radius: 50%;
+            background-color: var(--bg-color); display: flex; align-items: center; justify-content: center;
         }
-        
-        /* Header Scroll Behavior */
-        header.header-hidden {
-            transform: translateY(-100%);
-        }
-
-        /* Gemini Loader */
         .loader {
-            width: 48px;
-            height: 48px;
-            border: 5px solid #FFF;
-            border-bottom-color: var(--primary-color);
-            border-radius: 50%;
-            display: inline-block;
-            box-sizing: border-box;
-            animation: rotation 1s linear infinite;
+            width: 48px; height: 48px; border: 5px solid #FFF; border-bottom-color: var(--primary-color);
+            border-radius: 50%; display: inline-block; box-sizing: border-box; animation: rotation 1s linear infinite;
         }
-
-        @keyframes rotation {
-            0% {
-                transform: rotate(0deg);
-            }
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        /* Bengali Font for AI Section */
-        .bengali-font {
-            font-family: 'Hind Siliguri', sans-serif;
-        }
-        
-        /* SEO Report Styling */
-        #seo-report h3 {
-            font-size: 1.25rem;
-            font-weight: bold;
-            color: var(--primary-color);
-            margin-top: 1.5rem;
-            margin-bottom: 0.5rem;
-        }
-        #seo-report ul {
-            list-style-type: none;
-            padding-left: 0;
-        }
-        #seo-report li {
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: flex-start;
-        }
-        #seo-report li::before {
-            content: '✓';
-            color: var(--primary-color);
-            margin-right: 0.75rem;
-            font-weight: bold;
-        }
-
-        /* Accordion Styling */
-        .accordion-content {
-            transition: max-height 0.3s ease-out, padding 0.3s ease-out;
-            max-height: 0;
-            overflow: hidden;
-            padding: 0 1rem;
-        }
-
-        .accordion-header.active + .accordion-content {
-            max-height: 500px; /* Adjust as needed */
-            padding: 0 1rem 1rem 1rem;
-        }
-        .accordion-header.active .accordion-icon {
-            transform: rotate(180deg);
-        }
-
+        @keyframes rotation { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .bengali-font { font-family: 'Hind Siliguri', sans-serif; }
+        #seo-report h3 { font-size: 1.25rem; font-weight: bold; color: var(--primary-color); margin-top: 1.5rem; margin-bottom: 0.5rem; }
+        #seo-report ul { list-style-type: none; padding-left: 0; }
+        #seo-report li { margin-bottom: 0.5rem; display: flex; align-items: flex-start; }
+        #seo-report li::before { content: '✓'; color: var(--primary-color); margin-right: 0.75rem; font-weight: bold; }
+        .accordion-content { transition: max-height 0.3s ease-out, padding 0.3s ease-out; max-height: 0; overflow: hidden; padding: 0 1rem; }
+        .accordion-header.active + .accordion-content { max-height: 500px; padding: 0 1rem 1rem 1rem; }
+        .accordion-header.active .accordion-icon { transform: rotate(180deg); }
     </style>
 </head>
 <body class="antialiased">
     
-    <header id="animated-header">
-        <img src="https://i.postimg.cc/cHN6h1HL/Purple-Sky-Profile-Header.jpg" alt="Header background" class="w-full h-full object-cover">
+    <header id="page-header">
+        <img id="header-image" src="https://i.postimg.cc/q7RnspWN/Your-paragraph-text-6.png" alt="Header Logo">
     </header>
 
     <div id="main-content" class="container mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
 
-        <section id="hero" class="min-h-screen flex items-center">
-            <div class="flex flex-col md:flex-row items-center gap-8 md:gap-12 w-full py-12 md:py-20">
+        <section id="hero" class="flex items-center md:min-h-screen">
+            <div class="flex flex-col md:flex-row items-center gap-8 md:gap-12 w-full py-8 md:py-20 md:-translate-y-10">
                 <div class="w-[200px] h-[267px] md:w-[300px] md:h-[400px] flex-shrink-0 reveal from-left">
-                    <img src="https://i.postimg.cc/2ygY1yLx/retouch-2025081121252819.jpg" alt="Sajol Shutro Dhor Profile Picture" class="w-full h-full object-cover rounded-3xl border-4 border-sky-400/50">
+                    <img src="https://i.postimg.cc/2ygY1yLx/retouch-2025081121252819.jpg" alt="Sajol Shutro Dhor Profile Picture" class="w-full h-full object-cover rounded-3xl border-4 border-sky-400/50" loading="lazy">
                 </div>
-                <div class="text-center md:text-left reveal from-right">
-                    <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight uppercase whitespace-nowrap text-white">Sajol Shutro Dhor</h1>
-                    <div class="mt-6">
-                        <h2 class="text-2xl font-bold gradient-text mb-3">ABOUT ME</h2>
-                        <blockquote class="border-l-4 border-sky-400 pl-6">
-                            <p class="hidden md:block text-justify-custom text-gray-300 leading-relaxed italic">
-                                As a passionate digital marketer with over two years of proven experience, I specialize in helping brands achieve sustainable growth through AI-powered strategies, advanced SEO, and high-converting paid campaigns. My expertise spans across search engine optimization, social media strategy, and data-driven advertising, enabling me to craft campaigns that not only attract but also engage and convert the right audiences. With a balance of academic learning and real-world execution, I bring a results-focused approach to every project, consistently driving measurable success and long-term brand impact.
-                            </p>
-                            <p class="block md:hidden text-justify-custom text-gray-300 leading-relaxed italic">
-                                I drive sustainable brand growth through AI-powered strategies, advanced SEO, and high-converting campaigns.
-                            </p>
-                        </blockquote>
+                <div class="text-center md:text-left reveal from-right flex-grow flex flex-col justify-center">
+                    <div>
+                        <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight uppercase text-white">Sajol Shutro Dhor</h1>
+                        <div class="mt-6">
+                            <h2 class="text-2xl font-bold gradient-text mb-3">ABOUT ME</h2>
+                            <blockquote class="border-l-4 border-sky-400 pl-6">
+                                <p class="hidden md:block text-justify-custom text-gray-300 leading-relaxed italic">
+                                    As a passionate digital marketer with over two years of proven experience, I specialize in helping brands achieve sustainable growth through AI-powered strategies, advanced SEO, and high-converting paid campaigns. My expertise spans across search engine optimization, social media strategy, and data-driven advertising...
+                                </p>
+                                <p class="block md:hidden text-justify-custom text-gray-300 leading-relaxed italic">
+                                    I drive sustainable brand growth through AI-powered strategies, advanced SEO, and high-converting campaigns.
+                                </p>
+                            </blockquote>
+                        </div>
                     </div>
                     <div class="mt-8">
                         <a href="javascript:void(0)" onclick="downloadCV()" class="inline-block gradient-bg text-slate-900 font-semibold py-3 px-8 rounded-lg shadow-lg hover:scale-105 transform transition-transform duration-300">
-                           <i class="fas fa-download mr-2"></i> Download CV
+                            <i class="fas fa-download mr-2"></i> Download CV
                         </a>
                     </div>
                 </div>
@@ -315,7 +172,7 @@
                     <div class="mt-auto pt-6">
                         <div class="bg-gray-700 rounded-full h-8 p-1 flex items-center">
                              <div class="progress-bar-fill h-6 rounded-full flex items-center justify-center text-sm font-bold text-slate-900" data-progress="89">
-                                <i class="fa-solid fa-brain mr-2 ml-2"></i> 89%
+                                 <i class="fa-solid fa-brain mr-2 ml-2"></i> 89%
                              </div>
                         </div>
                     </div>
@@ -332,7 +189,7 @@
                     <div class="mt-auto pt-6">
                         <div class="bg-gray-700 rounded-full h-8 p-1 flex items-center">
                              <div class="progress-bar-fill h-6 rounded-full flex items-center justify-center text-sm font-bold text-slate-900" data-progress="85">
-                                <i class="fa-solid fa-magnifying-glass-chart mr-2 ml-2"></i> 85%
+                                 <i class="fa-solid fa-magnifying-glass-chart mr-2 ml-2"></i> 85%
                              </div>
                         </div>
                     </div>
@@ -350,7 +207,7 @@
                     <div class="mt-auto pt-6">
                         <div class="bg-gray-700 rounded-full h-8 p-1 flex items-center">
                              <div class="progress-bar-fill h-6 rounded-full flex items-center justify-center text-sm font-bold text-slate-900" data-progress="88">
-                                <i class="fa-solid fa-bullhorn mr-2 ml-2"></i> 88%
+                                 <i class="fa-solid fa-bullhorn mr-2 ml-2"></i> 88%
                              </div>
                         </div>
                     </div>
@@ -368,7 +225,7 @@
                     <div class="mt-auto pt-6">
                         <div class="bg-gray-700 rounded-full h-8 p-1 flex items-center">
                              <div class="progress-bar-fill h-6 rounded-full flex items-center justify-center text-sm font-bold text-slate-900" data-progress="83">
-                                <i class="fa-solid fa-share-nodes mr-2 ml-2"></i> 83%
+                                 <i class="fa-solid fa-share-nodes mr-2 ml-2"></i> 83%
                              </div>
                         </div>
                     </div>
@@ -385,7 +242,7 @@
                     <div class="mt-auto pt-6">
                         <div class="bg-gray-700 rounded-full h-8 p-1 flex items-center">
                              <div class="progress-bar-fill h-6 rounded-full flex items-center justify-center text-sm font-bold text-slate-900" data-progress="90">
-                                <i class="fa-solid fa-chart-line mr-2 ml-2"></i> 90%
+                                 <i class="fa-solid fa-chart-line mr-2 ml-2"></i> 90%
                              </div>
                         </div>
                     </div>
@@ -402,7 +259,7 @@
                     <div class="mt-auto pt-6">
                         <div class="bg-gray-700 rounded-full h-8 p-1 flex items-center">
                              <div class="progress-bar-fill h-6 rounded-full flex items-center justify-center text-sm font-bold text-slate-900" data-progress="80">
-                                <i class="fa-solid fa-user-tie mr-2 ml-2"></i> 80%
+                                 <i class="fa-solid fa-user-tie mr-2 ml-2"></i> 80%
                              </div>
                         </div>
                     </div>
@@ -420,9 +277,7 @@
                     <input type="text" id="business-input" placeholder="যেমন: local coffee shop, e-commerce clothing brand" class="w-full bg-black/20 border border-gray-600 rounded-lg py-3 px-4 text-white focus:outline-none focus:ring-2 focus:ring-sky-500">
                     <button id="generate-ideas-btn" class="gradient-bg text-slate-900 font-semibold py-3 px-6 rounded-lg shadow-lg hover:scale-105 transform transition-transform duration-300 whitespace-nowrap">Generate Ideas</button>
                 </div>
-                <div id="loader" class="text-center mt-6 hidden">
-                    <span class="loader"></span>
-                </div>
+                <div id="loader" class="text-center mt-6 hidden"> <span class="loader"></span> </div>
                 <div id="ideas-output" class="mt-6 space-y-4"></div>
             </div>
         </section>
@@ -432,15 +287,12 @@
         <section id="seo-analyzer" class="mt-16 md:mt-24">
             <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 gradient-text reveal from-bottom">🚀 AI Powered SEO Analyzer</h2>
             <div class="max-w-2xl mx-auto card-bg p-8 rounded-xl border border-gray-700 reveal from-bottom" style="transition-delay: 200ms;">
-                <p class="text-center text-gray-300 mb-4">যেকোনো ওয়েবসাইটের URL দিন এবং AI দ্বারা তৈরি SEO রিপোর্ট পান।</p>
+                <p class="text-center text-gray-300 mb-4">যেকোনো ওয়েবসাইটের URL দিন এবং AI দ্বারা তৈরি SEO রিপোর্ট পান।</p>
                 <div class="flex flex-col sm:flex-row gap-4">
                     <input type="url" id="url-input" placeholder="https://example.com" class="w-full bg-black/20 border border-gray-600 rounded-lg py-3 px-4 text-white focus:outline-none focus:ring-2 focus:ring-sky-500">
                     <button id="analyze-btn" class="gradient-bg text-slate-900 font-semibold py-3 px-6 rounded-lg shadow-lg hover:scale-105 transform transition-transform duration-300 whitespace-nowrap">Analyze SEO</button>
                 </div>
-                <div id="seo-loader" class="text-center mt-6 hidden">
-                    <span class="loader"></span>
-                    <p id="progress-text" class="text-gray-400 mt-2"></p>
-                </div>
+                <div id="seo-loader" class="text-center mt-6 hidden"> <span class="loader"></span> <p id="progress-text" class="text-gray-400 mt-2"></p> </div>
                 <div id="seo-report" class="mt-6 text-gray-300"></div>
             </div>
         </section>
@@ -494,7 +346,7 @@
                     <a href="https://app-na2.hubspot.com/academy/achievements/g0v48lyk/en/1/mr-sajol/digital-marketing" target="_blank" class="mt-4 inline-block gradient-bg text-slate-900 text-sm font-semibold py-2 px-5 rounded-lg hover:scale-105 transform transition-transform duration-300">
                         Show Credential <i class="fas fa-arrow-up-right-from-square ml-1"></i>
                     </a>
-                    <img src="https://i.postimg.cc/J4s5NnSW/Digital-Marketing-Certification-Course.png" alt="Hubspot Certificate" class="mt-6 rounded-lg w-full lock-image" oncontextmenu="return false;">
+                    <img src="https://i.postimg.cc/J4s5NnSW/Digital-Marketing-Certification-Course.png" alt="Hubspot Certificate" class="mt-6 rounded-lg w-full lock-image" loading="lazy">
                 </div>
                 <div class="card-bg p-6 rounded-xl border border-gray-700 flex flex-col items-start reveal from-right">
                     <h3 class="text-xl font-bold text-white">Google Digital Marketing & E-commerce</h3>
@@ -504,7 +356,7 @@
                     <a href="https://www.coursera.org/account/accomplishments/professional-cert/Y9K05RUXN1BL" target="_blank" class="mt-4 inline-block gradient-bg text-slate-900 text-sm font-semibold py-2 px-5 rounded-lg hover:scale-105 transform transition-transform duration-300">
                         Show Credential <i class="fas fa-arrow-up-right-from-square ml-1"></i>
                     </a>
-                    <img src="https://i.postimg.cc/NfXdHDyc/Google-Digital-Marketing-E-commerce-Professional-Certificate-page-0001.jpg" alt="Google Certificate" class="mt-6 rounded-lg w-full lock-image" oncontextmenu="return false;">
+                    <img src="https://i.postimg.cc/NfXdHDyc/Google-Digital-Marketing-E-commerce-Professional-Certificate-page-0001.jpg" alt="Google Certificate" class="mt-6 rounded-lg w-full lock-image" loading="lazy">
                 </div>
             </div>
         </section>
@@ -515,19 +367,19 @@
             <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 gradient-text reveal from-bottom">Featured Work</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
                 <div class="reveal zoom-in card-bg p-4 rounded-xl border border-gray-700" style="transition-delay: 100ms;">
-                    <img src="https://i.postimg.cc/y8sSpbtT/1.jpg" alt="Google Ads" class="rounded-lg w-full lock-image" oncontextmenu="return false;">
+                    <img src="https://i.postimg.cc/y8sSpbtT/1.jpg" alt="Google Ads" class="rounded-lg w-full lock-image" loading="lazy">
                     <h3 class="text-center mt-4 font-semibold text-white">Google Ads</h3>
                 </div>
                  <div class="reveal zoom-in card-bg p-4 rounded-xl border border-gray-700" style="transition-delay: 200ms;">
-                    <img src="https://i.postimg.cc/ZqLjkzKY/2.jpg" alt="Google Search Console" class="rounded-lg w-full lock-image" oncontextmenu="return false;">
+                    <img src="https://i.postimg.cc/ZqLjkzKY/2.jpg" alt="Google Search Console" class="rounded-lg w-full lock-image" loading="lazy">
                     <h3 class="text-center mt-4 font-semibold text-white">Google Search Console</h3>
                 </div>
                 <div class="reveal zoom-in card-bg p-4 rounded-xl border border-gray-700" style="transition-delay: 300ms;">
-                    <img src="https://i.postimg.cc/k55Rqtn6/3.jpg" alt="WordPress Revenue" class="rounded-lg w-full lock-image" oncontextmenu="return false;">
+                    <img src="https://i.postimg.cc/k55Rqtn6/3.jpg" alt="WordPress Revenue" class="rounded-lg w-full lock-image" loading="lazy">
                     <h3 class="text-center mt-4 font-semibold text-white">WordPress Revenue</h3>
                 </div>
                 <div class="reveal zoom-in card-bg p-4 rounded-xl border border-gray-700" style="transition-delay: 400ms;">
-                    <img src="https://i.postimg.cc/Kz61PqtB/4.jpg" alt="Facebook Ads Campaign" class="rounded-lg w-full lock-image" oncontextmenu="return false;">
+                    <img src="https://i.postimg.cc/Kz61PqtB/4.jpg" alt="Facebook Ads Campaign" class="rounded-lg w-full lock-image" loading="lazy">
                     <h3 class="text-center mt-4 font-semibold text-white">Facebook Ads Campaign</h3>
                 </div>
             </div>
@@ -541,29 +393,23 @@
                     <h2 class="text-3xl font-bold mb-8 gradient-text text-center md:text-left">Education</h2>
                     <div class="education-timeline">
                         <div class="education-item">
-                            <div class="education-icon">
-                                <i class="fas fa-graduation-cap text-sky-400"></i>
-                            </div>
+                            <div class="education-icon"> <i class="fas fa-graduation-cap text-sky-400"></i> </div>
                             <div class="pl-8">
                                 <p class="text-sky-400 font-bold">2025</p>
                                 <h3 class="font-semibold text-white">Honours 1st Year</h3>
                                 <p class="text-gray-400">Govt. Debendra College, Manikganj</p>
                             </div>
                         </div>
-                         <div class="education-item">
-                            <div class="education-icon">
-                                <i class="fas fa-graduation-cap text-sky-400"></i>
-                            </div>
+                        <div class="education-item">
+                            <div class="education-icon"> <i class="fas fa-graduation-cap text-sky-400"></i> </div>
                             <div class="pl-8">
                                 <p class="text-sky-400 font-bold">2024</p>
                                 <h3 class="font-semibold text-white">H.S.C (GPA 4.42)</h3>
                                 <p class="text-gray-400">Govt. Debendra College, Manikganj</p>
                             </div>
                         </div>
-                         <div class="education-item">
-                            <div class="education-icon">
-                                <i class="fas fa-graduation-cap text-sky-400"></i>
-                            </div>
+                        <div class="education-item">
+                            <div class="education-icon"> <i class="fas fa-graduation-cap text-sky-400"></i> </div>
                             <div class="pl-8">
                                 <p class="text-sky-400 font-bold">2022</p>
                                 <h3 class="font-semibold text-white">S.S.C (GPA 4.89)</h3>
@@ -577,18 +423,14 @@
                     <div class="space-y-4">
                         <div class="card-bg p-4 rounded-xl border border-gray-700 flex items-center justify-between">
                             <div class="flex items-center">
-                                <div class="w-10 flex justify-center">
-                                    <i class="fas fa-globe text-2xl text-sky-400"></i>
-                                </div>
+                                <div class="w-10 flex justify-center"> <i class="fas fa-globe text-2xl text-sky-400"></i> </div>
                                 <h3 class="font-semibold text-white text-lg ml-4">Bangla</h3>
                             </div>
                             <p class="text-sky-400 font-bold">Native</p>
                         </div>
                         <div class="card-bg p-4 rounded-xl border border-gray-700 flex items-center justify-between">
                             <div class="flex items-center">
-                                <div class="w-10 flex justify-center">
-                                    <i class="fas fa-language text-2xl text-sky-400"></i>
-                                </div>
+                                <div class="w-10 flex justify-center"> <i class="fas fa-language text-2xl text-sky-400"></i> </div>
                                 <h3 class="font-semibold text-white text-lg ml-4">English</h3>
                             </div>
                             <p class="text-sky-400 font-bold">Professional</p>
@@ -603,7 +445,6 @@
         <section id="contact">
             <h2 class="text-3xl md:text-4xl font-bold text-center mb-4 gradient-text reveal from-bottom">Get in Touch</h2>
             <p class="text-center text-gray-400 max-w-2xl mx-auto mb-12 reveal from-bottom" style="transition-delay: 100ms;">Feel free to reach out to me</p>
-            
             <div class="max-w-2xl mx-auto card-bg p-8 rounded-xl border border-gray-700 reveal from-bottom" style="transition-delay: 200ms;">
                 <form id="contact-form">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
@@ -626,32 +467,25 @@
                 </form>
                 <p id="form-status" class="text-center mt-4"></p>
             </div>
-
             <div class="mt-12 max-w-2xl mx-auto reveal from-bottom" style="transition-delay: 300ms;">
                 <p class="text-center text-gray-400 mb-4">Connect with me on</p>
                 <div class="space-y-4">
                     <a href="tel:+8801332634762" class="card-bg p-4 rounded-xl border border-gray-700 flex items-center hover:border-sky-500 transition-colors duration-300">
-                        <div class="w-10 flex justify-center">
-                            <i class="fas fa-phone text-2xl text-sky-400"></i>
-                        </div>
+                        <div class="w-10 flex justify-center"> <i class="fas fa-phone text-2xl text-sky-400"></i> </div>
                         <div class="ml-4 text-left">
                             <h3 class="font-bold text-white">Phone</h3>
                             <p class="text-gray-400">+8801332634762</p>
                         </div>
                     </a>
                     <a href="https://www.linkedin.com/in/sajolshutrodhor/" target="_blank" class="card-bg p-4 rounded-xl border border-gray-700 flex items-center hover:border-sky-500 transition-colors duration-300">
-                        <div class="w-10 flex justify-center">
-                            <i class="fab fa-linkedin text-2xl text-sky-400"></i>
-                        </div>
+                        <div class="w-10 flex justify-center"> <i class="fab fa-linkedin text-2xl text-sky-400"></i> </div>
                         <div class="ml-4 text-left">
                             <h3 class="font-bold text-white">LinkedIn</h3>
                             <p class="text-gray-400">sajolshutrodhor</p>
                         </div>
                     </a>
                     <a href="mailto:sajolshutrodhor@gmail.com" class="card-bg p-4 rounded-xl border border-gray-700 flex items-center hover:border-sky-500 transition-colors duration-300">
-                        <div class="w-10 flex justify-center">
-                            <i class="fas fa-envelope text-2xl text-sky-400"></i>
-                        </div>
+                        <div class="w-10 flex justify-center"> <i class="fas fa-envelope text-2xl text-sky-400"></i> </div>
                         <div class="ml-4 text-left">
                             <h3 class="font-bold text-white">Email</h3>
                             <p class="text-gray-400">sajolshutrodhor@gmail.com</p>
@@ -663,7 +497,7 @@
 
         <section class="mt-24 mb-12 md:mb-20">
             <div class="max-w-2xl mx-auto gradient-bg p-6 md:p-8 rounded-xl text-center reveal from-bottom">
-                <h2 class="text-2xl md:text-3xl font-bold text-slate-900">Ready to Grow Your Business?</h2>
+                <h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-slate-900">Ready to Grow Your Business?</h2>
                 <p class="mt-3 text-slate-800 hidden md:block">Let's discuss how we can achieve your digital marketing goals together.</p>
             </div>
         </section>
@@ -1001,6 +835,5 @@ function downloadCV() {
     URL.revokeObjectURL(link.href);
 }
     </script>
-
 </body>
 </html>
