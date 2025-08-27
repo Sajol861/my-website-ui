@@ -126,6 +126,72 @@
         .accordion-content { transition: max-height 0.3s ease-out, padding 0.3s ease-out; max-height: 0; overflow: hidden; padding: 0 1rem; }
         .accordion-header.active + .accordion-content { max-height: 500px; padding: 0 1rem 1rem 1rem; }
         .accordion-header.active .accordion-icon { transform: rotate(180deg); }
+        /* --- শুধুমাত্র মোবাইল কার্ডের জন্য নতুন CSS --- */
+.mobile-card-container {
+    display: flex;
+    justify-content: center;
+    padding: 4rem 1.5rem; /* উপরের প্যাডিং কমানো হয়েছে */
+}
+.mobile-card {
+    width: 100%;
+    max-width: 350px;
+    background-color: rgba(42, 42, 42, 0.8);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 32px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    /* নতুন অ্যানিমেশন যুক্ত করা হয়েছে */
+    animation: fadeInUp 0.8s ease-out forwards;
+}
+.mobile-card-img {
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    border: 3px solid #a0c4ff;
+    object-fit: cover;
+    /* ছবিকে মাঝখানে আনার জন্য এই লাইনটি যোগ করা হয়েছে */
+    margin: 0 auto 20px auto; 
+}
+.mobile-card-name {
+    font-size: 18px; /* ফন্ট সাইজ আরও কমানো হয়েছে */
+    font-weight: 700;
+    margin: 0 0 12px 0;
+    color: #f9fafb;
+    text-transform: uppercase;
+}
+.mobile-card-about {
+    font-size: 13px;
+    color: #d1d5db;
+    line-height: 1.6;
+    margin: 0 0 30px 0;
+}
+.mobile-card-button {
+    display: inline-block;
+    text-decoration: none;
+    color: #1f2020;
+    font-weight: 600;
+    padding: 12px 28px;
+    margin-top: 25px;
+    border-radius: 50px;
+    background: linear-gradient(90deg, #a0c4ff, #cbf3f0);
+    transition: transform 0.3s ease;
+}
+/* কার্ডের জন্য অ্যানিমেশন ইফেক্ট */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+.mobile-card-button:hover {
+    transform: scale(1.05);
+}
     </style>
 </head>
 <body class="antialiased">
@@ -136,7 +202,7 @@
 
     <div id="main-content" class="container mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
 
-        <section id="hero" class="flex items-center md:min-h-screen">
+        <section id="hero" class="hidden md:flex items-center min-h-screen">
             <div class="flex flex-col md:flex-row items-center gap-8 md:gap-12 w-full py-8 md:py-20 md:-translate-y-10">
                 <div class="w-[120px] h-[160px] md:w-[300px] md:h-[400px] flex-shrink-0 reveal from-left">
                     <img src="https://i.postimg.cc/2ygY1yLx/retouch-2025081121252819.jpg" alt="Sajol Shutro Dhor Profile Picture" class="w-full h-full object-cover rounded-3xl border-4 border-sky-400/50" loading="lazy">
@@ -151,7 +217,7 @@
                                     As a passionate digital marketer with over two years of proven experience, I specialize in helping brands achieve sustainable growth through AI powered strategies, advanced SEO and high converting paid campaigns. My expertise spans across search engine optimization social media strategy and data-driven advertising enabling me to craft campaigns that not only attract but also engage and convert the right audiences. With a balance of academic learning and real world execution, I bring a results focused approach to every project, consistently driving measurable success and long-term brand impact.
                                 </p>
                                 <p class="block md:hidden text-gray-300 leading-relaxed">
-                                    I drive sustainable brand growth through AI powered strategies, advanced SEO and high converting campaigns.
+                                    I drive sustainable brand growth through AI powered strategies, SEO and high converting campaigns.
                                 </p>
                             </blockquote>
                         </div>
@@ -165,6 +231,20 @@
             </div>
             
         </section>
+       
+        <section id="hero-mobile" class="md:hidden mobile-card-container">
+    <div class="mobile-card">
+        <img src="https://i.postimg.cc/2ygY1yLx/retouch-2025081121252819.jpg" alt="Profile Picture" class="mobile-card-img">
+
+        <h1 class="mobile-card-name">SAJOL SHUTRO DHOR</h1>
+
+        <p class="mobile-card-about">
+            I drive sustainable brand growth through AI powered strategies, SEO and high converting campaigns.
+        </p>
+
+        <a href="javascript:void(0)" onclick="downloadCV()" class="mobile-card-button">Download CV</a>
+    </div>
+</section>
 
         <section id="skills" class="mt-40 md:mt-24">
             <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 gradient-text reveal from-bottom">My Skills</h2>
